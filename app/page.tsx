@@ -3,7 +3,8 @@ import {
 } from "next/navigation";
 
 
-export default function HomePage() {
+export default function HomePage()
+{
   redirect(
       "/admin"
   );
