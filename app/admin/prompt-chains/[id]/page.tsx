@@ -173,7 +173,7 @@ export default async function PromptChainPage({
 
             <Link
                 href="/admin/prompt-chains"
-                className="text-sm font-medium text-zinc-600 transition hover:text-black"
+                className="text-sm font-medium text-zinc-600 transition hover:text-black dark:text-zinc-400 dark:hover:text-white"
             >
                 ← Back to Prompt Chains
             </Link>
@@ -211,14 +211,17 @@ export default async function PromptChainPage({
 
                 <div className="flex flex-wrap gap-3">
 
-                    <Link
-                        href={
-                            `/admin/prompt-chains/${id}/run`
-                        }
-                        className="flex h-11 items-center justify-center rounded-full border border-black bg-white px-6 text-sm font-semibold text-black transition hover:bg-zinc-100"
-                    >
-                        Run Prompt Chain
-                    </Link>
+                    {chainSteps.length >
+                        0 && (
+                            <Link
+                                href={
+                                    `/admin/prompt-chains/${id}/run`
+                                }
+                                className="flex h-11 items-center justify-center rounded-full border border-zinc-300 bg-white px-6 text-sm font-semibold text-black transition hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-900 dark:text-white dark:hover:bg-zinc-800"
+                            >
+                                Run Prompt Chain
+                            </Link>
+                        )}
 
 
                     <Link
@@ -238,35 +241,35 @@ export default async function PromptChainPage({
             {/* SUCCESS MESSAGES */}
 
             {query.created && (
-                <div className="mt-7 rounded-2xl border border-green-200 bg-green-50 px-5 py-4 text-sm font-medium text-green-700">
+                <div className="mt-7 rounded-2xl border border-green-200 bg-green-50 px-5 py-4 text-sm font-medium text-green-700 dark:border-green-900 dark:bg-green-950 dark:text-green-300">
                     Step created successfully.
                 </div>
             )}
 
 
             {query.updated && (
-                <div className="mt-7 rounded-2xl border border-green-200 bg-green-50 px-5 py-4 text-sm font-medium text-green-700">
+                <div className="mt-7 rounded-2xl border border-green-200 bg-green-50 px-5 py-4 text-sm font-medium text-green-700 dark:border-green-900 dark:bg-green-950 dark:text-green-300">
                     Step updated successfully.
                 </div>
             )}
 
 
             {query.deleted && (
-                <div className="mt-7 rounded-2xl border border-green-200 bg-green-50 px-5 py-4 text-sm font-medium text-green-700">
+                <div className="mt-7 rounded-2xl border border-green-200 bg-green-50 px-5 py-4 text-sm font-medium text-green-700 dark:border-green-900 dark:bg-green-950 dark:text-green-300">
                     Step deleted successfully.
                 </div>
             )}
 
 
             {query.reordered && (
-                <div className="mt-7 rounded-2xl border border-green-200 bg-green-50 px-5 py-4 text-sm font-medium text-green-700">
+                <div className="mt-7 rounded-2xl border border-green-200 bg-green-50 px-5 py-4 text-sm font-medium text-green-700 dark:border-green-900 dark:bg-green-950 dark:text-green-300">
                     Step order updated successfully.
                 </div>
             )}
 
 
             {query.error && (
-                <div className="mt-7 rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm font-medium text-red-700">
+                <div className="mt-7 rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm font-medium text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300">
 
                     {
                         query.error ===
@@ -282,49 +285,30 @@ export default async function PromptChainPage({
             )}
 
 
-            {/* STEP SUMMARY */}
+            {/* STEPS */}
 
-            <section className="mt-8 rounded-3xl border border-zinc-200 bg-white p-7">
+            <section className="mt-8 rounded-3xl border border-zinc-200 bg-white p-7 dark:border-zinc-700 dark:bg-zinc-900">
 
-                <div className="flex items-center justify-between gap-4">
+                <div>
 
-                    <div>
-
-                        <p className="text-[10px] font-semibold tracking-[0.18em] text-zinc-500">
-                            STEPS
-                        </p>
+                    <p className="text-[10px] font-semibold tracking-[0.18em] text-zinc-500">
+                        STEPS
+                    </p>
 
 
-                        <p className="mt-3 text-3xl font-semibold">
-                            {
-                                chainSteps.length
-                            }
-                        </p>
+                    <p className="mt-3 text-3xl font-semibold">
+                        {
+                            chainSteps.length
+                        }
+                    </p>
 
 
-                        <p className="mt-2 text-sm text-zinc-400">
-                            Steps in this prompt chain
-                        </p>
-
-                    </div>
-
-
-                    {chainSteps.length >
-                        0 && (
-                            <Link
-                                href={
-                                    `/admin/prompt-chains/${id}/run`
-                                }
-                                className="text-sm font-semibold text-zinc-600 transition hover:text-black"
-                            >
-                                Test this chain →
-                            </Link>
-                        )}
+                    <p className="mt-2 text-sm text-zinc-400">
+                        Steps in this prompt chain
+                    </p>
 
                 </div>
 
-
-                {/* STEPS */}
 
                 <div className="mt-7 space-y-4">
 
@@ -337,7 +321,7 @@ export default async function PromptChainPage({
                                 key={
                                     step.id
                                 }
-                                className="rounded-2xl border border-zinc-200 p-5"
+                                className="rounded-2xl border border-zinc-200 bg-white p-5 dark:border-zinc-700 dark:bg-zinc-900"
                             >
 
                                 <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
@@ -355,14 +339,14 @@ export default async function PromptChainPage({
 
                                         <div className="min-w-0">
 
-                                            <p className="font-semibold text-zinc-900">
+                                            <p className="font-semibold text-zinc-900 dark:text-white">
                                                 {
                                                     step.name
                                                 }
                                             </p>
 
 
-                                            <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-zinc-500">
+                                            <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-zinc-500 dark:text-zinc-400">
                                                 {
                                                     step.prompt_template
                                                 }
@@ -397,7 +381,7 @@ export default async function PromptChainPage({
                                                     0
                                                 }
                                                 title="Move step up"
-                                                className="h-9 rounded-full border border-zinc-200 px-4 text-sm font-semibold transition hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-30"
+                                                className="h-9 rounded-full border border-zinc-200 px-4 text-sm font-semibold transition hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-30 dark:border-zinc-700 dark:hover:bg-zinc-800"
                                             >
                                                 ↑
                                             </button>
@@ -426,7 +410,7 @@ export default async function PromptChainPage({
                                                     1
                                                 }
                                                 title="Move step down"
-                                                className="h-9 rounded-full border border-zinc-200 px-4 text-sm font-semibold transition hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-30"
+                                                className="h-9 rounded-full border border-zinc-200 px-4 text-sm font-semibold transition hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-30 dark:border-zinc-700 dark:hover:bg-zinc-800"
                                             >
                                                 ↓
                                             </button>
@@ -440,7 +424,7 @@ export default async function PromptChainPage({
                                             href={
                                                 `/admin/prompt-chains/${id}/steps/${step.id}/edit`
                                             }
-                                            className="flex h-9 items-center rounded-full border border-zinc-200 px-4 text-sm font-semibold transition hover:bg-zinc-50"
+                                            className="flex h-9 items-center rounded-full border border-zinc-200 px-4 text-sm font-semibold transition hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-800"
                                         >
                                             Edit
                                         </Link>
@@ -460,7 +444,7 @@ export default async function PromptChainPage({
 
                                             <button
                                                 type="submit"
-                                                className="h-9 rounded-full border border-red-200 px-4 text-sm font-semibold text-red-600 transition hover:bg-red-50"
+                                                className="h-9 rounded-full border border-red-200 px-4 text-sm font-semibold text-red-600 transition hover:bg-red-50 dark:border-red-900 dark:text-red-400 dark:hover:bg-red-950"
                                             >
                                                 Delete
                                             </button>
@@ -480,9 +464,9 @@ export default async function PromptChainPage({
 
                     {chainSteps.length ===
                         0 && (
-                            <div className="rounded-2xl border border-dashed border-zinc-200 px-6 py-14 text-center">
+                            <div className="rounded-2xl border border-dashed border-zinc-200 px-6 py-14 text-center dark:border-zinc-700">
 
-                                <p className="font-semibold text-zinc-800">
+                                <p className="font-semibold text-zinc-800 dark:text-white">
                                     No steps yet.
                                 </p>
 
@@ -507,48 +491,6 @@ export default async function PromptChainPage({
                 </div>
 
             </section>
-
-
-            {/* RUN EXPLANATION */}
-
-            {chainSteps.length >
-                0 && (
-                    <section className="mt-6 rounded-3xl border border-zinc-200 bg-white p-7">
-
-                        <p className="text-[10px] font-semibold tracking-[0.18em] text-zinc-500">
-                            TEST THIS CHAIN
-                        </p>
-
-
-                        <div className="mt-4 flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
-
-                            <div>
-
-                                <h2 className="text-xl font-semibold">
-                                    Run all steps in order
-                                </h2>
-
-
-                                <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-500">
-                                    Choose an image, run each prompt step, and review the final generated result.
-                                </p>
-
-                            </div>
-
-
-                            <Link
-                                href={
-                                    `/admin/prompt-chains/${id}/run`
-                                }
-                                className="flex h-11 shrink-0 items-center justify-center rounded-full bg-black px-6 text-sm font-semibold text-white transition hover:bg-zinc-800"
-                            >
-                                Run Prompt Chain
-                            </Link>
-
-                        </div>
-
-                    </section>
-                )}
 
         </div>
     );
