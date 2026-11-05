@@ -1,6 +1,12 @@
+import Link from "next/link";
+
 import {
     requireSuperadmin,
 } from "@/lib/requireSuperadmin";
+
+import {
+    deletePromptChainAction,
+} from "./actions";
 
 
 type PromptChain = {
@@ -20,11 +26,28 @@ type PromptChainStep = {
 };
 
 
-export default async function PromptChainsPage() {
+type PromptChainsPageProps = {
+    searchParams: Promise<{
+        created?: string;
+        updated?: string;
+        deleted?: string;
+        error?: string;
+    }>;
+};
+
+
+export default async function PromptChainsPage({
+                                                   searchParams,
+                                               }: PromptChainsPageProps)
+{
     const {
         supabase,
     } =
         await requireSuperadmin();
+
+
+    const query =
+        await searchParams;
 
 
     const [
@@ -46,6 +69,13 @@ export default async function PromptChainsPage() {
                 )
                 .order(
                     "created_at",
+                    {
+                        ascending:
+                            false,
+                    }
+                )
+                .order(
+                    "id",
                     {
                         ascending:
                             true,
@@ -71,28 +101,15 @@ export default async function PromptChainsPage() {
                         ascending:
                             true,
                     }
+                )
+                .order(
+                    "id",
+                    {
+                        ascending:
+                            true,
+                    }
                 ),
         ]);
-
-
-    if (
-        chainsResult.error
-    ) {
-        console.error(
-            "Could not load prompt chains:",
-            chainsResult.error
-        );
-    }
-
-
-    if (
-        stepsResult.error
-    ) {
-        console.error(
-            "Could not load prompt chain steps:",
-            stepsResult.error
-        );
-    }
 
 
     const chains =
@@ -112,28 +129,57 @@ export default async function PromptChainsPage() {
     return (
         <div className="p-8 lg:p-10 xl:p-12">
 
-            {/* HEADER */}
+            <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
 
-            <div>
+                <div>
 
-                <p className="text-[11px] font-semibold tracking-[0.24em] text-zinc-500">
-                    PROMPTING
-                </p>
-
-
-                <h1 className="mt-3 text-4xl font-semibold tracking-[-0.04em] lg:text-5xl">
-                    Prompt Chains
-                </h1>
+                    <p className="text-[11px] font-semibold tracking-[0.24em] text-zinc-500">
+                        PROMPTING
+                    </p>
 
 
-                <p className="mt-3 text-sm text-zinc-500">
-                    Review the prompt pipelines used by Meme Lab and inspect each step.
-                </p>
+                    <h1 className="mt-3 text-4xl font-semibold tracking-[-0.04em] lg:text-5xl">
+                        Prompt Chains
+                    </h1>
+
+
+                    <p className="mt-3 text-sm text-zinc-500">
+                        Create and manage prompt chains and their individual steps.
+                    </p>
+
+                </div>
+
+
+                <Link
+                    href="/admin/prompt-chains/new"
+                    className="flex h-11 items-center justify-center rounded-full bg-black px-6 text-sm font-semibold text-white"
+                >
+                    + New Prompt Chain
+                </Link>
 
             </div>
 
 
-            {/* SUMMARY */}
+            {query.created && (
+                <div className="mt-7 rounded-2xl border border-green-200 bg-green-50 px-5 py-4 text-sm font-medium text-green-700">
+                    Prompt chain created successfully.
+                </div>
+            )}
+
+
+            {query.updated && (
+                <div className="mt-7 rounded-2xl border border-green-200 bg-green-50 px-5 py-4 text-sm font-medium text-green-700">
+                    Prompt chain updated successfully.
+                </div>
+            )}
+
+
+            {query.deleted && (
+                <div className="mt-7 rounded-2xl border border-green-200 bg-green-50 px-5 py-4 text-sm font-medium text-green-700">
+                    Prompt chain deleted successfully.
+                </div>
+            )}
+
 
             <div className="mt-8 grid gap-4 md:grid-cols-2">
 
@@ -143,12 +189,9 @@ export default async function PromptChainsPage() {
                         PROMPT CHAINS
                     </p>
 
+
                     <p className="mt-4 text-4xl font-semibold">
                         {chains.length}
-                    </p>
-
-                    <p className="mt-2 text-sm text-zinc-400">
-                        Available pipelines
                     </p>
 
                 </div>
@@ -160,12 +203,9 @@ export default async function PromptChainsPage() {
                         TOTAL STEPS
                     </p>
 
+
                     <p className="mt-4 text-4xl font-semibold">
                         {steps.length}
-                    </p>
-
-                    <p className="mt-2 text-sm text-zinc-400">
-                        Steps across all chains
                     </p>
 
                 </div>
@@ -173,14 +213,13 @@ export default async function PromptChainsPage() {
             </div>
 
 
-            {/* CHAINS */}
-
             <div className="mt-8 space-y-5">
 
                 {chains.map(
                     (
                         chain
-                    ) => {
+                    ) =>
+                    {
                         const chainSteps =
                             steps.filter(
                                 (
@@ -199,37 +238,84 @@ export default async function PromptChainsPage() {
                                 className="overflow-hidden rounded-3xl border border-zinc-200 bg-white"
                             >
 
-                                {/* CHAIN HEADER */}
-
                                 <div className="border-b border-zinc-100 p-6">
 
-                                    <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+                                    <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
 
                                         <div>
 
-                                            <p className="text-xl font-semibold tracking-tight text-zinc-950">
+                                            <div className="flex items-center gap-3">
+
+                                                <p className="text-xl font-semibold">
+                                                    {
+                                                        chain.name
+                                                    }
+                                                </p>
+
+
+                                                <span className="rounded-full bg-zinc-100 px-3 py-1 text-xs font-semibold text-zinc-600">
+                                                    {
+                                                        chainSteps.length
+                                                    }{" "}
+                                                    {
+                                                        chainSteps.length ===
+                                                        1
+                                                            ? "step"
+                                                            : "steps"
+                                                    }
+                                                </span>
+
+                                            </div>
+
+
+                                            <p className="mt-2 text-sm text-zinc-500">
                                                 {
-                                                    chain.name
+                                                    chain.description ||
+                                                    "No description provided."
                                                 }
-                                            </p>
-
-
-                                            <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-500">
-                                                {chain.description ||
-                                                    "No description provided."}
                                             </p>
 
                                         </div>
 
 
-                                        <div className="shrink-0 rounded-full bg-zinc-100 px-4 py-2 text-xs font-semibold text-zinc-600">
-                                            {
-                                                chainSteps.length
-                                            }{" "}
-                                            {chainSteps.length ===
-                                            1
-                                                ? "step"
-                                                : "steps"}
+                                        <div className="flex flex-wrap gap-2">
+
+                                            <Link
+                                                href={
+                                                    `/admin/prompt-chains/${chain.id}`
+                                                }
+                                                className="flex h-10 items-center rounded-full bg-black px-5 text-sm font-semibold text-white"
+                                            >
+                                                Manage Steps
+                                            </Link>
+
+
+                                            <Link
+                                                href={
+                                                    `/admin/prompt-chains/${chain.id}/edit`
+                                                }
+                                                className="flex h-10 items-center rounded-full border border-zinc-200 px-5 text-sm font-semibold"
+                                            >
+                                                Edit
+                                            </Link>
+
+
+                                            <form
+                                                action={
+                                                    deletePromptChainAction.bind(
+                                                        null,
+                                                        chain.id
+                                                    )
+                                                }
+                                            >
+                                                <button
+                                                    type="submit"
+                                                    className="h-10 rounded-full border border-red-200 px-5 text-sm font-semibold text-red-600"
+                                                >
+                                                    Delete
+                                                </button>
+                                            </form>
+
                                         </div>
 
                                     </div>
@@ -237,13 +323,11 @@ export default async function PromptChainsPage() {
                                 </div>
 
 
-                                {/* STEPS */}
-
                                 <div className="p-6">
 
                                     {chainSteps.length >
                                     0 ? (
-                                        <div className="space-y-4">
+                                        <div className="space-y-3">
 
                                             {chainSteps.map(
                                                 (
@@ -253,7 +337,7 @@ export default async function PromptChainsPage() {
                                                         key={
                                                             step.id
                                                         }
-                                                        className="flex gap-4 rounded-2xl border border-zinc-100 bg-zinc-50 p-5"
+                                                        className="flex gap-4 rounded-2xl bg-zinc-50 p-5"
                                                     >
 
                                                         <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-black text-sm font-semibold text-white">
@@ -263,16 +347,16 @@ export default async function PromptChainsPage() {
                                                         </div>
 
 
-                                                        <div className="min-w-0">
+                                                        <div>
 
-                                                            <p className="font-semibold text-zinc-900">
+                                                            <p className="font-semibold">
                                                                 {
                                                                     step.name
                                                                 }
                                                             </p>
 
 
-                                                            <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-zinc-500">
+                                                            <p className="mt-2 text-sm text-zinc-500">
                                                                 {
                                                                     step.prompt_template
                                                                 }
@@ -286,9 +370,18 @@ export default async function PromptChainsPage() {
 
                                         </div>
                                     ) : (
-                                        <p className="text-sm text-zinc-400">
-                                            No steps are configured for this prompt chain.
-                                        </p>
+                                        <div className="rounded-2xl border border-dashed border-zinc-200 py-10 text-center">
+
+                                            <p className="font-semibold">
+                                                No steps yet
+                                            </p>
+
+
+                                            <p className="mt-2 text-sm text-zinc-400">
+                                                Open Manage Steps to add the first step.
+                                            </p>
+
+                                        </div>
                                     )}
 
                                 </div>
@@ -297,22 +390,6 @@ export default async function PromptChainsPage() {
                         );
                     }
                 )}
-
-
-                {chains.length ===
-                    0 && (
-                        <div className="rounded-3xl border border-zinc-200 bg-white px-8 py-20 text-center">
-
-                            <p className="text-lg font-semibold">
-                                No prompt chains found.
-                            </p>
-
-                            <p className="mt-2 text-sm text-zinc-400">
-                                Prompt chains will appear here when they are added to the database.
-                            </p>
-
-                        </div>
-                    )}
 
             </div>
 
