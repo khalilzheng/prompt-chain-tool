@@ -6,6 +6,7 @@ import {
 
 import DeleteConfirmationGuard from "./DeleteConfirmationGuard";
 import LogoutButton from "./LogoutButton";
+import ThemeSwitcher from "./ThemeSwitcher";
 
 
 export default async function AdminLayout({
@@ -41,7 +42,7 @@ export default async function AdminLayout({
 
 
     return (
-        <div className="min-h-screen bg-zinc-100 text-zinc-950">
+        <div className="min-h-screen bg-zinc-100 text-zinc-950 dark:bg-zinc-950 dark:text-zinc-100">
 
             <DeleteConfirmationGuard />
 
@@ -63,7 +64,7 @@ export default async function AdminLayout({
 
                         <div>
 
-                            <p className="text-sm font-semibold">
+                            <p className="text-sm font-semibold text-white">
                                 Prompt Chain Tool
                             </p>
 
@@ -81,33 +82,29 @@ export default async function AdminLayout({
 
                     <nav className="mt-9 flex-1">
 
-                        <div>
+                        <p className="mb-2 px-3 text-[9px] font-semibold tracking-[0.2em] text-zinc-600">
+                            PROMPTING
+                        </p>
 
-                            <p className="mb-2 px-3 text-[9px] font-semibold tracking-[0.2em] text-zinc-600">
-                                PROMPTING
+
+                        <Link
+                            href="/admin/prompt-chains"
+                            className="block rounded-xl bg-zinc-900 px-3 py-2 text-sm font-medium text-white transition hover:bg-zinc-800"
+                        >
+                            Prompt Chains
+                        </Link>
+
+
+                        {/* APPEARANCE */}
+
+                        <div className="mt-8">
+
+                            <p className="mb-3 px-3 text-[9px] font-semibold tracking-[0.2em] text-zinc-600">
+                                APPEARANCE
                             </p>
 
 
-                            <Link
-                                href="/admin/prompt-chains"
-                                className="block rounded-xl bg-zinc-900 px-3 py-2 text-sm font-medium text-white transition hover:bg-zinc-800"
-                            >
-                                Prompt Chains
-                            </Link>
-
-                        </div>
-
-
-                        <div className="mt-6">
-
-                            <p className="mb-2 px-3 text-[9px] font-semibold tracking-[0.2em] text-zinc-600">
-                                GENERATION
-                            </p>
-
-
-                            <div className="rounded-xl px-3 py-2 text-sm font-medium text-zinc-600">
-                                Generated Media
-                            </div>
+                            <ThemeSwitcher />
 
                         </div>
 
@@ -125,7 +122,7 @@ export default async function AdminLayout({
 
                         <div className="mt-3 flex items-center gap-3">
 
-                            <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-zinc-700 text-xs font-semibold">
+                            <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-zinc-700 text-xs font-semibold text-white">
                                 {initial}
                             </div>
 
@@ -155,7 +152,7 @@ export default async function AdminLayout({
                 </aside>
 
 
-                {/* MAIN CONTENT */}
+                {/* MAIN */}
 
                 <main className="ml-[220px] min-h-screen">
                     {children}
